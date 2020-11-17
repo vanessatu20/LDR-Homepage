@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:LDR_app/WeatherRepo.dart';
-// import 'package:LDR_app/WeatherBloc.dart';
-// import 'package:LDR_app/WeatherModel.dart';
-import 'package:weather/weather.dart';
+import './WeatherState.dart';
+import './Clock.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -29,8 +22,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-	int _dayNum = 36;
-	String _eventName = 'we meet';
 	@override
 	Widget build(BuildContext context) {
 		return MaterialApp(
@@ -57,153 +48,16 @@ class _MyHomePageState extends State<MyHomePage> {
 											
 										), 
 										
-										child: DefaultTabController(
-											length: 3,
-											child: new TabBar(
-												unselectedLabelColor: Colors.black,
-												labelColor: Colors.black,
-												unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-												labelStyle: TextStyle(fontWeight: FontWeight.bold),
-												indicator: BoxDecoration(),	
-											tabs: [
-												Tab(
-													child: Container(
-														decoration: BoxDecoration(
-															borderRadius: BorderRadius.circular(50),
-															
-														),
-														child: Align(
-															alignment: Alignment.center,
-															child: Text("home"),
-														),
-													),
-												),
-												Tab(
-													child: Container(
-														decoration: BoxDecoration(
-															borderRadius: BorderRadius.circular(50),
-														),
-														child: Align(
-															alignment: Alignment.center,
-															child: Text("map"),
-														),
-													),
-												),
-												Tab(
-													child: Container(
-														decoration: BoxDecoration(
-															borderRadius: BorderRadius.circular(50),
-														),
-														child: Align(
-															alignment: Alignment.center,
-															child: Text("goal"),
-														),
-													),
-												),
-											]),	
-										),
+										child: 
+											HomeTabBar()
 									),
-									Stack(
-										children: <Widget>[
-											Center(
-												child: Container(
-													margin: EdgeInsets.only(top: 40),
-													child: Column(
-													mainAxisAlignment: MainAxisAlignment.center,
-													children: <Widget>[
-														ProfileCard(),
-														Image(
-															image: new AssetImage("assets/timer.png"),
-														),
-														Text(
-															'$_dayNum' + ' Days',
-															style: TextStyle(
-																fontSize: 30,
-																color: Colors.black,
-															),
-														),
-														Text(
-															'until ' + '$_eventName',
-															style: TextStyle(
-																fontSize: 18,
-																color: Colors.black,
-															),
-														),
-														ProfileCard(),
-													],
-												),
-												)
-												
-											),
-										]
-									),
+									CenterComponents(),
 									]
 								),
 						
 							),
-							Expanded(
-								child: Align(
-									alignment: FractionalOffset.bottomCenter,
-									child: Padding(
-										padding: EdgeInsets.only(bottom: 55.0),
-										child: Container(
-											child:
-												FloatingActionButton(
-													onPressed: (){},
-													backgroundColor: Color(0xFF736464),
-													child: Icon(Icons.chat_bubble_outline),
-													elevation: 0.0,
-												),
-										),
-									),
-								),
-							),
-							Expanded(
-									child: Align(
-										alignment: FractionalOffset.bottomCenter,
-										child: Padding(
-											padding: EdgeInsets.only(bottom: 25.0),
-											child: 
-												Row(	
-													crossAxisAlignment: CrossAxisAlignment.end,	
-													mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-													children: <Widget>[
-														IconButton(
-															icon: Icon(
-																Icons.home,
-																color: Color(0xFF736464)
-															),
-															onPressed: () {},
-														),
-														IconButton(
-															icon: Icon(
-																Icons.calendar_today,
-																color: Color(0xFF736464)
-															),
-															onPressed: () {},),
-														Container(
-															height: 90,
-															child: CircleAvatar(
-																backgroundColor: Colors.transparent,
-															),
-														),
-														IconButton(
-															icon: Icon(
-																Icons.photo_library,
-																color: Color(0xFF736464)
-															),
-															onPressed: () {},),
-														IconButton(
-															icon: Icon(
-																Icons.person,
-																color: Color(0xFF736464)
-															),
-															onPressed: () {},),
-													],
-												)	
-										),
-									),
-								)
+							ChatButton(),
+							BottomNavBar()
 						]
 					),
 				),
@@ -212,11 +66,62 @@ class _MyHomePageState extends State<MyHomePage> {
 	}
 }
 
+class CenterComponents extends StatelessWidget {
+	int _dayNum = 36;
+	String _eventName = 'we meet';
+	String girlPic = "assets/girl.png";
+	String guyPic = "assets/guy.png";
+  
+	@override
+	Widget build(BuildContext context) {
+		return (
+			Stack(
+				children: <Widget>[
+					Center(
+						child: Container(
+							margin: EdgeInsets.only(top: 40),
+							child: Column(
+							mainAxisAlignment: MainAxisAlignment.center,
+							children: <Widget>[
+								ProfileCard(girlPic),
+								Image(
+									image: new AssetImage("assets/timer.png"),
+								),
+								Text(
+									'$_dayNum' + ' Days',
+									style: TextStyle(
+										fontSize: 30,
+										color: Colors.black,
+									),
+								),
+								Text(
+									'until ' + '$_eventName',
+									style: TextStyle(
+										fontSize: 18,
+										color: Colors.black,
+									),
+								),
+								ProfileCard(guyPic),
+							],
+						),
+						)
+						
+					),
+				]
+			)
+		);
+	}
+}
+
 class ProfileCard extends StatefulWidget {
+  final String pic;
+  const ProfileCard(this.pic);
+
 _ProfileCardState createState() => _ProfileCardState();
 }
 
 class _ProfileCardState extends State<ProfileCard> {
+	
 	@override
 	Widget build(BuildContext context) {
 		return Container(
@@ -229,13 +134,13 @@ class _ProfileCardState extends State<ProfileCard> {
 							decoration: new BoxDecoration(
 								borderRadius: BorderRadius.circular(10.0),
 								image: new DecorationImage(
-									image: new AssetImage("assets/girl.png"),
+									image: new AssetImage(widget.pic),
 									fit: BoxFit.cover,	
 								),
 							),
 						),
 						Padding(
-							padding: EdgeInsets.all(12.0),
+							padding: EdgeInsets.all(15.0),
 							child: Column(
 								mainAxisAlignment: MainAxisAlignment.end,
 								children: <Widget>[
@@ -257,109 +162,131 @@ class _ProfileCardState extends State<ProfileCard> {
 				
 }
 
-
-
-class Clock extends StatefulWidget {
-	_ClockState createState() => _ClockState();
-}
-class _ClockState extends State<Clock> {
-	String _now;
-	Timer _everySecond;
-	@override
-	void initState() {
-		super.initState();
-		_now = _timeToString(DateTime.now());
-		_everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
-			if (!mounted) return;
-			setState(() {
-				_now = _timeToString(DateTime.now());
-			});
-		});
-	}
-	String _timeToString(DateTime now) {
-		String timeString =
-			"${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-		return timeString;
-
-	}
+class HomeTabBar extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
-		return Row(
-			children: <Widget>[
-				Icon(
-					Icons.access_time,
-					size: 18,
-					color: Colors.white
-				),
-				Text(
-					" " + _now,
-					style: TextStyle(
-						color: Colors.white,
-					)
-				)
-			],
-			
+		return (
+			DefaultTabController(
+				length: 3,
+				child: new TabBar(
+					unselectedLabelColor: Colors.black,
+					labelColor: Colors.black,
+					unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+					labelStyle: TextStyle(fontWeight: FontWeight.bold),
+					indicator: BoxDecoration(),	
+				tabs: [
+					Tab(
+						child: Container(
+							decoration: BoxDecoration(
+								borderRadius: BorderRadius.circular(50),
+								
+							),
+							child: Align(
+								alignment: Alignment.center,
+								child: Text("home"),
+							),
+						),
+					),
+					Tab(
+						child: Container(
+							decoration: BoxDecoration(
+								borderRadius: BorderRadius.circular(50),
+							),
+							child: Align(
+								alignment: Alignment.center,
+								child: Text("map"),
+							),
+						),
+					),
+					Tab(
+						child: Container(
+							decoration: BoxDecoration(
+								borderRadius: BorderRadius.circular(50),
+							),
+							child: Align(
+								alignment: Alignment.center,
+								child: Text("goal"),
+							),
+						),
+					),
+				]),	
+			)
 		);
 	}
 }
-////////////////////////////////////////
-///////////////////////////////////////
-// Weather Test
-///////////////////////////////////////
-////////////////////////////////////////
 
 
-class MyWeatherState extends StatelessWidget {
-	http.Client httpClient = new http.Client();
-	String _temp;
-	
+class ChatButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+		child: Align(
+			alignment: FractionalOffset.bottomCenter,
+			child: Padding(
+				padding: EdgeInsets.only(bottom: 55.0),
+				child: Container(
+					child:
+						FloatingActionButton(
+							onPressed: (){},
+							backgroundColor: Color(0xFF736464),
+							child: Icon(Icons.chat_bubble_outline),
+							elevation: 0.0,
+						),
+				),
+			),
+		),
+	);
+  }
+}
 
-	final String apiUrl = "http://api.openweathermap.org/data/2.5/weather?q=taipei&appid=7bf8cec48e8a6deec18afe54b571d22c";
-
-	Future<String> fetchTemp() async {
-		var result = await http.get(apiUrl);
-		double temp = json.decode(result.body)['main']['temp'];
-		double tempDouble = (temp - 273.15);
-		_temp = " " + tempDouble.floor().toString() + '˚C';
-		return _temp;
-  	}
-
-	@override
-	Widget build(BuildContext context) {
-		return Container(
-			child: FutureBuilder<String>(
-				future: fetchTemp(),
-				builder: (context, snapshot) {
-					if(snapshot.hasData) {
-						return Row(
-							children: <Widget>[
-								Icon(
-									Icons.wb_sunny,
-									size: 18,
-									color: Colors.white
+class BottomNavBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+		child: Align(
+			alignment: FractionalOffset.bottomCenter,
+			child: Padding(
+				padding: EdgeInsets.only(bottom: 25.0),
+				child: 
+					Row(	
+						crossAxisAlignment: CrossAxisAlignment.end,	
+						mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+						children: <Widget>[
+							IconButton(
+								icon: Icon(
+									Icons.home,
+									color: Color(0xFF736464)
 								),
-								Text(
-									_temp,
-									style: TextStyle(
-										color: Colors.white
-									)
-								)
-							],
-						);
-						
-						
-					}
-					else {
-						return Text(
-							"X",
-							style: TextStyle(
-								color: Colors.white
-							)
-						);
-					}
-				},
-			)
-			
-    	);
-	}
+								onPressed: () {},
+							),
+							IconButton(
+								icon: Icon(
+									Icons.calendar_today,
+									color: Color(0xFF736464)
+								),
+								onPressed: () {},),
+							Container(
+								height: 90,
+								child: CircleAvatar(
+									backgroundColor: Colors.transparent,
+								),
+							),
+							IconButton(
+								icon: Icon(
+									Icons.photo_library,
+									color: Color(0xFF736464)
+								),
+								onPressed: () {},),
+							IconButton(
+								icon: Icon(
+									Icons.person,
+									color: Color(0xFF736464)
+								),
+								onPressed: () {},),
+						],
+					)	
+			),
+		),
+	);
+  }
 }
